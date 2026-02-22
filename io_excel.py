@@ -6,7 +6,7 @@ from models import AttendanceRecord
 from utils import parse_time, format_time, minutes_to_hours, parse_permit_string
 
 
-# Column name mappings (Spanish -> internal)
+# Column name mappings (Spanish -> internal attribute name)
 COLUMN_MAP = {
     "ID": "employee_id",
     "FECHA": "date",
@@ -20,6 +20,9 @@ COLUMN_MAP = {
     "PERMISO": "permits",
 }
 
+# Fields that should be parsed as time values
+_TIME_FIELDS = {"entry", "meal_out", "meal_in", "dinner_out", "dinner_in", "exit"}
+
 
 def load_excel(filepath: str) -> List[AttendanceRecord]:
     """Load attendance records from an Excel file."""
@@ -32,30 +35,18 @@ def load_excel(filepath: str) -> List[AttendanceRecord]:
     for _, row in df.iterrows():
         rec = AttendanceRecord()
 
-        if "ID" in df.columns:
-            rec.employee_id = str(row.get("ID", "")).strip()
-        if "FECHA" in df.columns:
-            val = row.get("FECHA", "")
-            if pd.notna(val):
-                rec.date = str(val).strip()
+        for col_name, attr_name in COLUMN_MAP.items():
+            if col_name not in df.columns:
+                continue
+            val = row.get(col_name, "")
+            if attr_name == "permits":
+                setattr(rec, attr_name, parse_permit_string(val))
+            elif attr_name in _TIME_FIELDS:
+                setattr(rec, attr_name, parse_time(val))
+            elif attr_name == "date":
+                setattr(rec, attr_name, str(val).strip() if pd.notna(val) else "")
             else:
-                rec.date = ""
-        if "EMPLEADO" in df.columns:
-            rec.employee_name = str(row.get("EMPLEADO", "")).strip()
-        if "ENTRADA" in df.columns:
-            rec.entry = parse_time(row.get("ENTRADA"))
-        if "SALIDA A COMER" in df.columns:
-            rec.meal_out = parse_time(row.get("SALIDA A COMER"))
-        if "REGRESO DE COMER" in df.columns:
-            rec.meal_in = parse_time(row.get("REGRESO DE COMER"))
-        if "SALIDA A CENAR" in df.columns:
-            rec.dinner_out = parse_time(row.get("SALIDA A CENAR"))
-        if "REGRESO DE CENAR" in df.columns:
-            rec.dinner_in = parse_time(row.get("REGRESO DE CENAR"))
-        if "SALIDA" in df.columns:
-            rec.exit = parse_time(row.get("SALIDA"))
-        if "PERMISO" in df.columns:
-            rec.permits = parse_permit_string(row.get("PERMISO", ""))
+                setattr(rec, attr_name, str(val).strip())
 
         records.append(rec)
 

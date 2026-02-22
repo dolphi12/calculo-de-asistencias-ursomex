@@ -102,8 +102,8 @@ class TestCore(unittest.TestCase):
 
     def test_total_time_no_exit(self):
         rec = self._make_record("08:00", None, meal_out="12:00", meal_in="13:00")
-        total = calculate_total_time(rec)
-        self.assertEqual(total, 300.0)  # 08:00 to 13:00
+        total_time = calculate_total_time(rec)
+        self.assertEqual(total_time, 300.0)  # 08:00 to 13:00
 
     def test_total_time_no_entry(self):
         rec = self._make_record(None, "17:00")

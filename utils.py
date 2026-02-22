@@ -1,7 +1,7 @@
 """Utility functions for time parsing and formatting."""
 
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import List, Optional
 import math
 
 
@@ -58,7 +58,7 @@ def apply_rounding(minutes: float, mode: str, rounding_minutes: int) -> float:
     return minutes
 
 
-def parse_permit_string(permit_str: str) -> list:
+def parse_permit_string(permit_str: str) -> List[datetime]:
     """Parse a permit string like '14:30, 15:00, 18:30, 19:00' into list of datetime objects."""
     if not permit_str or str(permit_str).strip().lower() in ("", "nan"):
         return []
