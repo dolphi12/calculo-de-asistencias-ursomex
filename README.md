@@ -72,6 +72,24 @@ tests.py        # Tests unitarios
 requirements.txt
 ```
 
+## Interfaz Web (Streamlit)
+
+Además de la CLI, el proyecto incluye una interfaz web profesional construida con **Streamlit**.
+
+### Ejecutar la interfaz web
+
+```bash
+streamlit run web.py
+```
+
+### Funcionalidades
+
+- **Barra lateral** – Configura los parámetros de cálculo (umbral comida, umbral cena, jornada base, modo de redondeo, minutos de redondeo) en tiempo real.
+- **Carga de archivos** – Sube un archivo `.xlsx` con los registros de asistencia directamente desde el navegador.
+- **Dashboard** – Visualiza KPIs (total de registros, horas laboradas totales, horas extra totales) y un gráfico de barras comparativo por empleado.
+- **Tabla de Datos** – Consulta los registros detallados en una tabla interactiva.
+- **Exportar** – Genera y descarga el archivo de resultados `.xlsx` desde el navegador.
+
 ## Tests
 
 ```bash
